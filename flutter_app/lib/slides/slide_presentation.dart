@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter_slides/models/slides.dart';
-import 'package:flutter_slides/slides/slide_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_slides/models/slides.dart';
+import 'package:flutter_slides/slides/slide_page.dart';
 import 'package:menubar/menubar.dart';
 import 'package:provider/provider.dart';
+
 import '../utils/menus.dart';
 import 'slide_editor.dart';
+import 'slide_list.dart';
 
 class SlidePresentation extends StatefulWidget {
   @override
@@ -90,16 +94,49 @@ class _SlidePresentationState extends State<SlidePresentation>
           onClicked: () => _moveToSlideAtIndex(model, 0),
         ),
         MenuItem(
-          label: 'Next Slide',
-          shortcut: LogicalKeySet(
-              LogicalKeyboardKey.meta, LogicalKeyboardKey.bracketRight),
-          onClicked: () => _advancePresentation(model),
-        ),
-        MenuItem(
-          label: 'Previous Slide',
-          shortcut: LogicalKeySet(
-              LogicalKeyboardKey.meta, LogicalKeyboardKey.bracketLeft),
-          onClicked: () => _reversePresentation(model),
+          label: 'Show Help',
+          shortcut: LogicalKeySet(LogicalKeyboardKey.meta,
+              LogicalKeyboardKey.shift, LogicalKeyboardKey.keyH),
+          onClicked: () {
+            final _markdown = """
+## Hints
+
+**To advance:**
+- right arrow
+- or, spacebar
+
+**To go back:**
+- left arrow
+
+**To toggle slide selector sidebar:**
+- `]` to show
+- `[` to hide
+
+**To change to a new slide in sidebar:**
+- `z + click` on the slide
+
+**To present fullscreen**
+- `cmd + ctl + F`
+- or, select the green "full screen" button in the upper left of the window
+
+**To leave fullscreen**
+- `cmd + ctl + F`
+- or, move your cursor to the top of the screen and tap the green button in upper left
+
+""";
+            showDialog(
+              context: context,
+              builder: (_) => Center(
+                child: Container(
+                  width: 400,
+                  height: 520,
+                  child: Card(
+                    child: Markdown(data: _markdown),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ]),
     ]);
@@ -150,7 +187,11 @@ class _SlidePresentationState extends State<SlidePresentation>
                           Container(width: _slideListController.value * 50.0),
                         ],
                       ),
-                      Container()
+                      _slideListController.value <= 0.01
+                          ? Container()
+                          : SlideList(
+                              currentSlideIndex: _currentSlideIndex,
+                            ),
                     ],
                   ),
           );

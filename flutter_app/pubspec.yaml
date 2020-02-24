@@ -8,6 +8,7 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^4.0.4
+  flutter_markdown: ^0.3.3
 
   cupertino_icons: ^0.1.0
 
