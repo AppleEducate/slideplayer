@@ -75,7 +75,8 @@ class _SlidePresentationState extends State<SlidePresentation>
               LogicalKeyboardKey.shift, LogicalKeyboardKey.keyP),
           onClicked: () {
             _slidePageController?.start();
-            model.setPresentationMode(true);
+            model.start();
+            _slideListController.value = 0;
           },
         ),
         MenuItem(
@@ -84,7 +85,8 @@ class _SlidePresentationState extends State<SlidePresentation>
               LogicalKeyboardKey.shift, LogicalKeyboardKey.keyE),
           onClicked: () {
             _slidePageController?.exit();
-            model.setPresentationMode(false);
+            model.stop();
+            _slideListController.value = 0;
           },
         ),
         MenuItem(
@@ -191,6 +193,14 @@ class _SlidePresentationState extends State<SlidePresentation>
                           ? Container()
                           : SlideList(
                               currentSlideIndex: _currentSlideIndex,
+                              onSlideTapped: (index) {
+                                if (listTapAllowed && mounted) {
+                                  setState(() {
+                                    _currentSlideIndex = index;
+                                    _moveToSlideAtIndex(model, index);
+                                  });
+                                }
+                              },
                             ),
                     ],
                   ),

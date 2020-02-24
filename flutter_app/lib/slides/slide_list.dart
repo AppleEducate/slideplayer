@@ -6,10 +6,12 @@ import 'slide_page.dart';
 
 class SlideList extends StatefulWidget {
   final int currentSlideIndex;
+  final Function(int) onSlideTapped;
 
   const SlideList({
     Key key,
     @required this.currentSlideIndex,
+    @required this.onSlideTapped,
   }) : super(key: key);
   @override
   _SlideListState createState() => _SlideListState();
@@ -62,11 +64,7 @@ class _SlideListState extends State<SlideList> with TickerProviderStateMixin {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTapDown: (details) {
-                if (mounted) {
-                  setState(() {
-                    _currentSlideIndex = index;
-                  });
-                }
+                widget.onSlideTapped(index);
               },
               child: Stack(
                 children: <Widget>[

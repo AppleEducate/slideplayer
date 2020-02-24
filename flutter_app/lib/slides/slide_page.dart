@@ -5,7 +5,6 @@ import 'package:flutter_slides/models/slide.dart';
 import 'package:flutter_slides/models/slides.dart';
 import 'package:flutter_slides/content/animated_content_widget.dart';
 import 'package:flutter/material.dart';
-import '../utils/menus.dart';
 
 class SlidePageController {
   _SlidePageControllerListener listener;
@@ -80,6 +79,14 @@ class SlidePageState extends State<SlidePage>
   @override
   void dispose() {
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(SlidePage oldWidget) {
+    if (oldWidget.slide != widget.slide) {
+      if (mounted) setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

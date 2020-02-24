@@ -54,8 +54,44 @@ class FlutterSlidesModel extends ChangeNotifier {
 
   bool _isPresenting = false;
   bool get isPresenting => _isPresenting;
-  void setPresentationMode(bool value) {
-    _isPresenting = value;
+
+  void start() {
+    _isPresenting = true;
+    notifyListeners();
+  }
+
+  void stop() {
+    _isPresenting = false;
+    notifyListeners();
+  }
+
+  void updatePresentation(presUtils.Presentation value) {
+    _presentation = value;
+    // List<Slide> slideList = [];
+    // SlideFactors slideFactors = SlideFactors(
+    //   normalizationWidth: value.slideWidth,
+    //   normalizationHeight: value.slideHeight,
+    //   fontScaleFactor: value.fontScaleFactor,
+    // );
+    // for (var slide in value.slides) {
+    //   List contentList = slide.content == null
+    //       ? null
+    //       : slide.content.map((e) => e.toJson()).toList();
+    //   int advancementCount = slide?.advancementCount ?? 0;
+    //   bool animatedTransition = slide?.animatedTransition ?? false;
+    //   Color slideBGColor =
+    //       ColorUtils.colorFromString(slide?.bgColor ?? '0xFFFFFFFF');
+    //   slideList.add(
+    //     Slide(
+    //         content: contentList,
+    //         slideFactors: slideFactors,
+    //         advancementCount: advancementCount,
+    //         backgroundColor: slideBGColor,
+    //         animatedTransition: animatedTransition),
+    //   );
+    // }
+    // loadedSlides.slides = slideList;
+    // this.slides = slideList;
     notifyListeners();
   }
 
@@ -144,12 +180,11 @@ class FlutterSlidesModel extends ChangeNotifier {
         );
       }
       loadedSlides.slides = slideList;
+      updatePresentation(p);
       loadedSlides.notifyListeners();
       SharedPreferences.getInstance().then((prefs) {
         prefs.setString(_RECENTLY_OPENED_FILE_PREFS_KEY, filePath);
       });
-      _presentation = p;
-      notifyListeners();
     } catch (e) {
       print("Error loading slides file: $e");
     }
