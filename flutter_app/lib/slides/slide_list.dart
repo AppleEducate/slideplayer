@@ -48,6 +48,9 @@ class _SlideListState extends State<SlideList> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     FlutterSlidesModel model =
         Provider.of<FlutterSlidesModel>(context, listen: true);
+    final _controller = ScrollController(
+      initialScrollOffset: _lastSlideListScrollOffset,
+    );
     return Container(
       width: 200.0,
       color: model.slidesListBGColor,
@@ -56,58 +59,60 @@ class _SlideListState extends State<SlideList> with TickerProviderStateMixin {
           _lastSlideListScrollOffset = notification.metrics.pixels;
           return true;
         },
-        child: ListView.builder(
-          controller: ScrollController(
-            initialScrollOffset: _lastSlideListScrollOffset,
-          ),
-          itemCount: model.slides.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTapDown: (details) {
-                widget.onSlideTapped(index);
-              },
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _currentSlideIndex != index
-                            ? Colors.transparent
-                            : model.slidesListHighlightColor,
-                        width: 4.0,
+        child: Scrollbar(
+          controller: _controller,
+          child: ListView.builder(
+            controller: _controller,
+            itemCount: model.slides.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTapDown: (details) {
+                  widget.onSlideTapped(index);
+                },
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: _currentSlideIndex != index
+                              ? Colors.transparent
+                              : model.slidesListHighlightColor,
+                          width: 4.0,
+                        ),
+                      ),
+                      child: SlidePage(
+                        isPreview: true,
+                        slide: model.slides[index],
                       ),
                     ),
-                    child: SlidePage(
-                      isPreview: true,
-                      slide: model.slides[index],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 6.0,
-                    left: 6.0,
-                    child: Container(
-                      height: 20.0,
-                      child: Material(
-                        color: model.slidesListHighlightColor.withOpacity(0.75),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Text(
-                              '$index',
-                              style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.white,
-                                  fontFamily: "RobotoMono"),
+                    Positioned(
+                      bottom: 6.0,
+                      left: 6.0,
+                      child: Container(
+                        height: 20.0,
+                        child: Material(
+                          color:
+                              model.slidesListHighlightColor.withOpacity(0.75),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Text(
+                                '$index',
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.white,
+                                    fontFamily: "RobotoMono"),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

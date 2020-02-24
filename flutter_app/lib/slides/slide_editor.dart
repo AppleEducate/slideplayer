@@ -40,23 +40,23 @@ class _SlideEditorState extends State<SlideEditor> {
         children: [
           Container(
             width: 300,
-            child: SlideList(
-              currentSlideIndex: _currentSlideIndex,
-              onSlideTapped: (index) {
-                if (mounted) {
-                  setState(() {
-                    _currentSlideIndex = index;
-                  });
-                }
-              },
+            child:  SlideList(
+                currentSlideIndex: _currentSlideIndex,
+                onSlideTapped: (index) {
+                  if (mounted) {
+                    setState(() {
+                      _currentSlideIndex = index;
+                    });
+                  }
+                },
+              
             ),
           ),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(20.0),
               child: Center(
-                child: Card(
-                  elevation: 4.0,
+                child: Container(
                   child: SlidePage(
                     isPreview: true,
                     slide: model.slides[_currentSlideIndex],
